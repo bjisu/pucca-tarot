@@ -183,17 +183,21 @@ img { max-width: 100%; display: block; }
   object-fit: cover;
   object-position: 50% 40%;         /* 캐릭터(중앙 약간 위)가 화면 중심에 오도록 */
 }
+/* 오늘의 타로·타로카드 리스트: 뿌까 머리가 뱃지와 겹치지 않게 이미지를 살짝 아래로 */
+.menu-card:nth-child(2) .menu-img,
+.menu-card:nth-child(3) .menu-img { object-position: 50% 28%; }
 
-/* 왼쪽 위 알약 뱃지 — 딥레드 불투명 + 크림 세리프 */
+/* 왼쪽 위 알약 뱃지 — 다크 브라운블랙 불투명 + 크림 세리프
+   (빨강 일러스트 위에서도 크림 배경 위에서도 대비 확보) */
 .menu-badge {
   position: absolute; top: 14px; left: 16px; z-index: 2;
-  padding: 5px 14px 6px; border-radius: 999px;
-  border: 1px solid rgba(253, 243, 228, .35);
-  background: var(--red);
-  color: #fdf3e4;
-  font-family: var(--font-serif); font-style: italic;
-  font-size: 13px; letter-spacing: .08em; line-height: 1;
-  box-shadow: 0 3px 10px rgba(97, 32, 20, .3);
+  padding: 7px 17px 8px; border-radius: 999px;
+  border: 1.5px solid #f5e9d6;   /* 검은 머리·빨강·크림 어디서든 윤곽 분리 */
+  background: #2b1a12;
+  color: #f5e9d6;
+  font-family: var(--font-serif);
+  font-size: 14px; letter-spacing: .11em; line-height: 1;
+  box-shadow: 0 6px 18px rgba(20, 8, 3, .55);
 }
 
 /* 하단 밴드: 웜화이트 + 브라운블랙 텍스트 */
