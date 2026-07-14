@@ -1,0 +1,22 @@
+# 환경 변수 (API 키 — 절대 커밋 금지)
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# 로그·런타임 캐시
+logs/
+*.log
+runtime/
+
+# OS
+.DS_Store
+Thumbs.db

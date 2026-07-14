@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#160b2e">
+  <title>뿌까 오라클 — Pucca Oracle</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <main id="app" class="app"></main>
+
+  <!-- 카드 읽는 중 로딩 오버레이 -->
+  <div id="overlay" class="overlay hidden" role="alert">
+    <div class="overlay-inner">
+      <div class="orb"><span>✦</span></div>
+      <p id="overlay-text">카드를 읽는 중...</p>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
