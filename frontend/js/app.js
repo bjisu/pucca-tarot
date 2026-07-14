@@ -9,6 +9,9 @@
   const $overlay = document.getElementById("overlay");
   const $overlayText = document.getElementById("overlay-text");
 
+  // 에셋 캐시 무효화 버전 — 같은 파일명으로 이미지를 교체하면 이 값을 올려주세요.
+  const ASSET_VER = "20260714-2";
+
   /* ── 상태 (새로고침 대비 sessionStorage 유지) ── */
   const STORE_KEY = "pucca_state_v1";
   let state = loadState() || {
@@ -121,9 +124,9 @@
   function renderHome() {
     $app.innerHTML =
       '<section class="screen home-screen">' +
-      menuCard("Classic Tarot", "클래식 타로", "카드 3장으로 구체적으로 운명을 점쳐줄게", "classic") +
-      menuCard("Today's Tarot", "오늘의 타로", "오늘의 운세를 카드 1장으로 간편하게 점쳐줄게", "today") +
-      menuCard("Tarot Card List", "타로카드 리스트", "타로를 알고 보면 더 재밌어!", "dex") +
+      menuCard("Classic Tarot", "클래식 타로", "카드 3장으로 구체적으로 운명을 점쳐줄게", "classic", "content_1.png") +
+      menuCard("Today's Tarot", "오늘의 타로", "오늘의 운세를 카드 1장으로 간편하게 점쳐줄게", "today", "content_2.png") +
+      menuCard("Tarot Card List", "타로카드 리스트", "타로를 알고 보면 더 재밌어!", "dex", "content_3.png") +
       "</section>";
 
     $app.querySelectorAll("[data-menu]").forEach(function (el) {
@@ -137,11 +140,11 @@
       });
     });
 
-    function menuCard(badge, title, desc, key) {
+    function menuCard(badge, title, desc, key, img) {
       return '<button class="menu-card" data-menu="' + key + '">' +
         '<span class="menu-hero">' +
         '<span class="menu-badge">' + badge + "</span>" +
-        puccaHTML("lg") +
+        '<img class="menu-img" src="/assets/image/' + img + "?v=" + ASSET_VER + '" alt="" onerror="this.remove()">' +
         "</span>" +
         '<span class="menu-foot"><h2>' + title + "</h2><p>" + desc + "</p></span>" +
         "</button>";
@@ -186,9 +189,10 @@
       });
     }
     function renderList() {
+      // 질문 앞 이모지는 표시하지 않는다 (데이터의 emoji 필드는 무시)
       $list.innerHTML = cats[state.catIndex].questions.map(function (q) {
         return '<button class="q-item" data-q="' + esc(q.text) + '">' +
-          '<span class="emo">' + q.emoji + "</span><span>" + esc(q.text) + "</span></button>";
+          "<span>" + esc(q.text) + "</span></button>";
       }).join("");
       $list.querySelectorAll(".q-item").forEach(function (b) {
         b.addEventListener("click", function () {
@@ -245,7 +249,7 @@
     /* ── 부채꼴 덱 ── */
     const COUNT = 30;
     const els = [];
-    let center = (COUNT - 1) / 2;
+    let center = Math.floor(COUNT / 2); // 정수로 시작해야 중앙 강조 카드가 항상 존재한다
     for (let i = 0; i < COUNT; i++) {
       const el = document.createElement("div");
       el.className = "deck-card";
@@ -493,7 +497,8 @@
     const $send = document.getElementById("chatSend");
 
     function bubble(role, text) {
-      return '<div class="msg ' + (role === "me" ? "me" : "pucca") + '">' +
+      // 역할 클래스는 아바타 컴포넌트(.pucca)와 충돌하지 않게 them/me 사용
+      return '<div class="msg ' + (role === "me" ? "me" : "them") + '">' +
         (role === "pucca" ? puccaHTML("sm") : "") +
         '<div class="bubble">' + esc(text) + "</div></div>";
     }
@@ -514,7 +519,7 @@
       saveState();
       renderLog();
       $log.insertAdjacentHTML("beforeend",
-        '<div class="msg pucca" id="typing">' + puccaHTML("sm") +
+        '<div class="msg them" id="typing">' + puccaHTML("sm") +
         '<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
       $log.scrollTop = $log.scrollHeight;
 
@@ -544,12 +549,14 @@
   }
 
   /* ═══════════ 타로 카드 도감 ═══════════ */
+  /* 탭 이모지는 구형 기기 호환을 위해 유니코드 6~8 범위만 사용
+     (U+1FA84 마술봉, U+1FA99 동전은 유니코드 13이라 구형 기기에서 네모로 깨짐) */
   const DEX_TABS = [
     { label: "🌟 Major Arcana", filter: function (c) { return c.arcana === "Major Arcana"; } },
-    { label: "🪄 Wands", filter: function (c) { return c.suit === "Wands"; } },
+    { label: "🔥 Wands", filter: function (c) { return c.suit === "Wands"; } },
     { label: "🍷 Cups", filter: function (c) { return c.suit === "Cups"; } },
     { label: "🗡️ Swords", filter: function (c) { return c.suit === "Swords"; } },
-    { label: "🪙 Pentacles", filter: function (c) { return c.suit === "Pentacles"; } },
+    { label: "💰 Pentacles", filter: function (c) { return c.suit === "Pentacles"; } },
   ];
 
   function renderDex() {
