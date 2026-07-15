@@ -158,11 +158,13 @@
 
     $app.innerHTML =
       '<section class="screen">' +
-      '<div class="hero">' + puccaHTML("") +
-      '<div class="hero-text">' +
-      '<span class="badge">' + (state.mode === "today" ? "Today's Tarot" : "Classic Tarot") + "</span>" +
-      "<h2>요즘 어떤 고민이 있어?<br>골라봐!</h2>" +
-      "</div></div>" +
+      '<div class="q-hero">' +
+      '<div class="q-hero-text">' +
+      '<span class="l1">요즘 어떤 고민이 있어?</span>' +
+      '<span class="l2">고민을 알려줘!</span>' +
+      "</div>" +
+      '<img class="q-hero-pucca" src="/assets/image/hero.png?v=' + ASSET_VER + '" alt="뿌까" onerror="this.remove()">' +
+      "</div>" +
       '<input id="qInput" class="q-input" type="text" maxlength="120" ' +
       'placeholder="고민을 선택하거나 직접 입력해봐!" value="' + esc(state.question) + '">' +
       '<nav class="cat-tabs" id="catTabs"></nav>' +
@@ -229,7 +231,8 @@
 
     $app.innerHTML =
       '<section class="screen draw-screen">' +
-      '<div class="hero">' + puccaHTML("") +
+      '<div class="hero">' +
+      '<img class="hero-img" src="/assets/image/hero.png?v=' + ASSET_VER + '" alt="뿌까" onerror="this.remove()">' +
       '<div class="hero-text">' +
       '<span class="badge">' + (state.mode === "today" ? "Today's Tarot" : "Classic Tarot") + "</span>" +
       "<h2>고민을 생각하면서<br>카드 " + needed + "장을 뽑아봐!</h2>" +
