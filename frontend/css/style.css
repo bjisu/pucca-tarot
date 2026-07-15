@@ -30,6 +30,7 @@ body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
+  overflow-x: hidden;  /* 풀블리드(100vw) 요소가 데스크톱 스크롤바 폭만큼 가로 스크롤 만드는 것 방지 */
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -295,7 +296,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ── 카드 뽑기 ─────────────────────────────── */
-.draw-screen { overflow: hidden; }
+/* 가로 잘림은 deck-area(뷰포트 풀블리드)에서만 일어나야 하므로 여기선 overflow 주지 않는다 */
 .slots { display: flex; justify-content: center; gap: 14px; margin: 22px 0 6px; }
 .slot {
   width: 88px; aspect-ratio: 3 / 5;
@@ -311,24 +312,33 @@ img { max-width: 100%; display: block; }
 
 .deck-hint { text-align: center; color: var(--ink-dim); font-size: 13.5px; margin-top: 10px; }
 
-/* 화면 가로 전체를 쓰는 완만한 반원 아치 덱 — 양끝 카드는 화면 밖으로 자연스럽게 잘림 */
+/* 뷰포트 가로 전체를 쓰는 완만한 반원 아치 덱 — 양끝 카드는 화면(뷰포트) 가장자리에서만 잘림.
+   margin: calc(50% - 50vw)로 .app 패딩·최대폭과 무관하게 항상 뷰포트 풀블리드.
+   위/아래 여유: top 48px(중앙 카드 떠오름+글로우 headroom), height 276px(호 하강+그림자 포함) */
 .deck-area {
-  position: relative; height: 258px; margin: 16px -20px 0;
+  position: relative; height: 276px; margin: 12px calc(50% - 50vw) 0;
   touch-action: pan-y; user-select: none; -webkit-user-select: none;
   overflow: hidden;
 }
 .deck-card {
-  position: absolute; left: 50%; top: 30px;
+  position: absolute; left: 50%; top: 48px;
   width: 96px; margin-left: -48px;
-  transform-origin: 50% 560px;   /* 카드 아래 560px = 거대한 원의 중심 (완만한 호) */
+  transform-origin: 50% 560px;   /* 카드 위쪽 기준 560px 아래 = 거대한 원의 중심 (완만한 호) */
   will-change: transform;
   cursor: pointer;
 }
 .deck-card.snap { transition: transform .28s cubic-bezier(.22,.9,.3,1.1), opacity .2s ease; }
-.deck-card .card-back { width: 100%; box-shadow: 0 8px 18px rgba(97, 62, 34, .28); }
+.deck-card .card-back {
+  width: 100%; box-shadow: 0 8px 18px rgba(97, 62, 34, .28);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+/* 중앙 카드: 살짝만 떠오르고 미묘하게 크게 + 은은한 글로우 — 부채꼴 흐름에서 튀지 않는 수준 */
 .deck-card.centered .card-back {
+  transform: translateY(-7px) scale(1.06);
   border-color: var(--red-deep);
-  box-shadow: 0 0 16px rgba(179, 52, 42, .25), 0 10px 22px rgba(97, 62, 34, .3);
+  box-shadow:
+    0 0 12px rgba(212, 148, 74, .3),
+    0 10px 20px rgba(97, 62, 34, .28);
 }
 
 .fly-card { position: fixed; z-index: 90; pointer-events: none; transition: all .55s cubic-bezier(.4,.1,.2,1); }

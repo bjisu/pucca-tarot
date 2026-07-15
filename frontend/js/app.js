@@ -270,8 +270,12 @@
     function clampCenter(v) {
       return Math.min(Math.max(v, 0), els.length - 1);
     }
-    /* 거대한 원(반지름 560px, 중심은 화면 아래)의 윗부분 호를 따라 배치.
-       회전축을 카드 아래 560px에 두면 rotate만으로 호 위치·기울기가 만들어진다 */
+    /* 거대한 원(회전축 카드 위 560px 아래)의 윗부분 호를 따라 촘촘히 배치.
+       카드당 3.2° → 이웃 간격 약 31px(카드폭 96px과 겹침), 뷰포트 390px에 15장 안팎.
+       호 배치는 rotate만 담당 — 중앙 카드 떠오름·확대·글로우는 CSS(.centered .card-back)가 처리.
+       뷰포트 밖(중앙에서 8.5장 초과)은 opacity로 정리 — 화면 안 카드는 절대 페이드되지 않음 */
+    const STEP_DEG = 3.2;
+    const STEP_PX = 560 * Math.sin(STEP_DEG * Math.PI / 180); // 이웃 카드 가로 간격 ≈ 31px
     function layout(snap) {
       els.forEach(function (el, i) {
         const off = i - center;
@@ -279,11 +283,9 @@
         el.classList.toggle("snap", !!snap);
         el.classList.toggle("centered", a < 0.5);
         el.style.zIndex = String(200 - Math.round(a * 10));
-        el.style.opacity = a > 3.6 ? "0" : "1";
-        el.style.pointerEvents = a > 3.6 ? "none" : "";
-        const near = Math.max(0, 1 - a);
-        el.style.transform =
-          "rotate(" + (off * 11) + "deg) translateY(" + (-near * 14) + "px) scale(" + (1 + near * 0.08) + ")";
+        el.style.opacity = a > 8.5 ? "0" : "1";
+        el.style.pointerEvents = a > 8.5 ? "none" : "";
+        el.style.transform = "rotate(" + (off * STEP_DEG) + "deg)";
       });
     }
     layout(true);
@@ -302,7 +304,8 @@
       const dx = e.clientX - startX;
       moved = Math.max(moved, Math.abs(dx));
       if (moved > 6) {
-        center = clampCenter(startCenter - dx / 95);
+        // 카드 간격이 좁아 1:1이면 너무 빨리 넘어감 — 손가락 이동의 절반 속도로
+        center = clampCenter(startCenter - dx / (STEP_PX * 2));
         layout(false);
       }
     });
