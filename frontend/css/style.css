@@ -462,6 +462,8 @@ img { max-width: 100%; display: block; }
 
 /* ── 도감 ──────────────────────────────────── */
 .dex-head { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }
+/* 제목-탭 간격 약 10px, 탭-그리드 약 10px (질문 화면 탭 여백과 별개) */
+.dex-screen .cat-tabs { margin-top: 2px; margin-bottom: 4px; }
 .dex-head h2 { font-size: 20px; font-weight: 800; color: var(--ink); }
 .dex-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-bottom: 20px; }
 .dex-item { text-align: center; }

@@ -574,7 +574,7 @@
   function renderDex() {
     if (state.dexTab >= DEX_TABS.length) state.dexTab = 0;
     $app.innerHTML =
-      '<section class="screen">' +
+      '<section class="screen dex-screen">' +
       '<div class="dex-head">' +
       '<button class="back-chevron" id="dexBack" aria-label="뒤로가기"></button>' +
       "<h2>타로 카드 도감</h2></div>" +
