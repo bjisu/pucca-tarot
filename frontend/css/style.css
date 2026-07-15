@@ -140,6 +140,11 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: center;
   color: #fdf3e4; font-size: 1.6em; text-shadow: 0 0 10px rgba(255, 230, 200, .5);
 }
+/* 뒷면 이미지(assets/image/card.png)가 있으면 오너먼트를 덮음 — 없으면 onerror로 제거되어 폴백 표시 */
+.card-back > img {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%; object-fit: cover;
+}
 
 /* ── 홈 ─────────────────────────────────────
    웜화이트 메뉴 카드 + 딥레드 포인트 뱃지 */
@@ -236,25 +241,12 @@ img { max-width: 100%; display: block; }
   .q-hero-text .l2 { font-size: 22px; }
 }
 
-/* ── 히어로 박스 (카드 뽑기 화면) ──────────── */
-.hero {
-  display: flex; align-items: center; gap: 16px;
-  padding: 18px; border-radius: var(--radius-lg);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-card);
-  margin-bottom: 18px;
-}
-.hero-text .badge { display: block; margin-bottom: 3px; }
-.hero-text h2 { font-size: 19px; font-weight: 800; line-height: 1.4; word-break: keep-all; color: var(--ink); }
-/* 히어로 캐릭터 이미지 — 원형 크롭 없이 원본 비율 그대로, 세로로 채우되 위아래 살짝 여유 */
-.hero-img {
-  flex: none; align-self: center;
-  height: 98px; width: auto; max-width: 108px;
-  object-fit: contain;
-  margin: 2px 0;
-  mix-blend-mode: multiply;   /* 원본 PNG의 흰 배경을 카드 색에 녹여 투명처럼 보이게 */
-}
+/* 카드 뽑기 화면: 같은 히어로 스타일, 문구가 길어 강조줄만 한 단계 작게.
+   아래에 입력창이 없으므로 PNG 하단 여백은 히어로 경계에서 잘라낸다 */
+.draw-screen .q-hero { overflow: hidden; height: 124px; }  /* hero2가 세로로 길어 하트까지 담기게 */
+/* hero2.png는 세로가 더 긴 비율이라 높이 기준으로 맞춘다 (하단 여백이 거의 없어 -3px만 보정) */
+.draw-screen .q-hero-pucca { bottom: -3px; width: auto; height: 118px; }
+.draw-screen .q-hero-text .l2 { font-size: 21px; }
 
 .q-input {
   position: relative; z-index: 2;
@@ -317,28 +309,30 @@ img { max-width: 100%; display: block; }
 .slot .card-back { width: 100%; height: 100%; animation: slotpop .3s ease; }
 @keyframes slotpop { from { transform: scale(.7); opacity: 0; } to { transform: none; opacity: 1; } }
 
-.deck-hint { text-align: center; color: var(--ink-dim); font-size: 13.5px; margin-top: 14px; }
+.deck-hint { text-align: center; color: var(--ink-dim); font-size: 13.5px; margin-top: 10px; }
 
+/* 화면 가로 전체를 쓰는 완만한 반원 아치 덱 — 양끝 카드는 화면 밖으로 자연스럽게 잘림 */
 .deck-area {
-  position: relative; height: 300px; margin: 4px -20px 0;
+  position: relative; height: 258px; margin: 16px -20px 0;
   touch-action: pan-y; user-select: none; -webkit-user-select: none;
   overflow: hidden;
 }
 .deck-card {
-  position: absolute; left: 50%; top: 46px;
-  width: 108px; margin-left: -54px;
-  transform-origin: 50% 130%;
+  position: absolute; left: 50%; top: 30px;
+  width: 96px; margin-left: -48px;
+  transform-origin: 50% 560px;   /* 카드 아래 560px = 거대한 원의 중심 (완만한 호) */
   will-change: transform;
   cursor: pointer;
 }
 .deck-card.snap { transition: transform .28s cubic-bezier(.22,.9,.3,1.1), opacity .2s ease; }
-.deck-card .card-back { width: 100%; box-shadow: 0 10px 22px rgba(97, 62, 34, .3); }
+.deck-card .card-back { width: 100%; box-shadow: 0 8px 18px rgba(97, 62, 34, .28); }
 .deck-card.centered .card-back {
   border-color: var(--red-deep);
-  box-shadow: 0 0 22px rgba(179, 52, 42, .35), 0 12px 26px rgba(97, 62, 34, .32);
+  box-shadow: 0 0 16px rgba(179, 52, 42, .25), 0 10px 22px rgba(97, 62, 34, .3);
 }
 
 .fly-card { position: fixed; z-index: 90; pointer-events: none; transition: all .55s cubic-bezier(.4,.1,.2,1); }
+.fly-card .card-back { width: 100%; height: 100%; }
 
 /* ── 결과 ──────────────────────────────────── */
 .result-q {

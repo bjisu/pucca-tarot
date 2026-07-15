@@ -75,6 +75,12 @@
       '<img src="/assets/character/pucca_main.png" alt="" onerror="this.remove()">' +
       "</div>";
   }
+  function cardBackHTML() {
+    // 카드 뒷면: assets/image/card.png가 있으면 이미지, 없으면 CSS 오너먼트 폴백
+    return '<div class="card-back">' +
+      '<img src="/assets/image/card.png?v=' + ASSET_VER + '" alt="" onerror="this.remove()">' +
+      "</div>";
+  }
   function cardFaceHTML(card) {
     return '<div class="card-face">' +
       '<div class="card-ph">' +
@@ -231,19 +237,20 @@
 
     $app.innerHTML =
       '<section class="screen draw-screen">' +
-      '<div class="hero">' +
-      '<img class="hero-img" src="/assets/image/hero.png?v=' + ASSET_VER + '" alt="뿌까" onerror="this.remove()">' +
-      '<div class="hero-text">' +
-      '<span class="badge">' + (state.mode === "today" ? "Today's Tarot" : "Classic Tarot") + "</span>" +
-      "<h2>고민을 생각하면서<br>카드 " + needed + "장을 뽑아봐!</h2>" +
-      "</div></div>" +
+      '<div class="q-hero">' +
+      '<div class="q-hero-text">' +
+      '<span class="l1">고민을 생각하면서</span>' +
+      '<span class="l2">카드 ' + needed + '장을 뽑아봐!</span>' +
+      "</div>" +
+      '<img class="q-hero-pucca" src="/assets/image/hero2.png?v=' + ASSET_VER + '" alt="뿌까" onerror="this.remove()">' +
+      "</div>" +
       '<div class="slots" id="slots">' +
       Array.from({ length: needed }).map(function () {
         return '<div class="slot">미선택</div>';
       }).join("") +
       "</div>" +
-      '<p class="deck-hint">카드를 좌우로 이동해 보세요</p>' +
       '<div class="deck-area" id="deckArea"></div>' +
+      '<p class="deck-hint">카드를 좌우로 이동해 보세요</p>' +
       "</section>";
 
     const $slots = Array.prototype.slice.call(document.querySelectorAll("#slots .slot"));
@@ -256,13 +263,15 @@
     for (let i = 0; i < COUNT; i++) {
       const el = document.createElement("div");
       el.className = "deck-card";
-      el.innerHTML = '<div class="card-back"></div>';
+      el.innerHTML = cardBackHTML();
       $area.appendChild(el);
       els.push(el);
     }
     function clampCenter(v) {
       return Math.min(Math.max(v, 0), els.length - 1);
     }
+    /* 거대한 원(반지름 560px, 중심은 화면 아래)의 윗부분 호를 따라 배치.
+       회전축을 카드 아래 560px에 두면 rotate만으로 호 위치·기울기가 만들어진다 */
     function layout(snap) {
       els.forEach(function (el, i) {
         const off = i - center;
@@ -270,11 +279,11 @@
         el.classList.toggle("snap", !!snap);
         el.classList.toggle("centered", a < 0.5);
         el.style.zIndex = String(200 - Math.round(a * 10));
-        el.style.opacity = a > 5.4 ? "0" : "1";
-        el.style.pointerEvents = a > 5.4 ? "none" : "";
+        el.style.opacity = a > 3.6 ? "0" : "1";
+        el.style.pointerEvents = a > 3.6 ? "none" : "";
         const near = Math.max(0, 1 - a);
         el.style.transform =
-          "rotate(" + (off * 9) + "deg) translateY(" + (-near * 22) + "px) scale(" + (1 + near * 0.1) + ")";
+          "rotate(" + (off * 11) + "deg) translateY(" + (-near * 14) + "px) scale(" + (1 + near * 0.08) + ")";
       });
     }
     layout(true);
@@ -293,7 +302,7 @@
       const dx = e.clientX - startX;
       moved = Math.max(moved, Math.abs(dx));
       if (moved > 6) {
-        center = clampCenter(startCenter - dx / 42);
+        center = clampCenter(startCenter - dx / 95);
         layout(false);
       }
     });
@@ -325,7 +334,7 @@
 
       const fly = document.createElement("div");
       fly.className = "fly-card";
-      fly.innerHTML = '<div class="card-back" style="width:100%;height:100%"></div>';
+      fly.innerHTML = cardBackHTML();
       fly.style.left = from.left + "px";
       fly.style.top = from.top + "px";
       fly.style.width = from.width + "px";
@@ -347,11 +356,8 @@
       });
       setTimeout(function () {
         fly.remove();
-        slot.textContent = "";
         slot.style.borderStyle = "solid";
-        const b = document.createElement("div");
-        b.className = "card-back";
-        slot.appendChild(b);
+        slot.innerHTML = cardBackHTML();
         picked++;
         picking = false;
         if (picked >= needed) setTimeout(submitReading, 450);
@@ -411,7 +417,7 @@
       '<div class="result-cards">' +
       cards.map(function (c, i) {
         return '<div><div class="flip' + (isToday ? " big" : "") + '" id="flip' + i + '">' +
-          '<div class="flip-inner"><div class="card-back"></div>' + cardFaceHTML(c.card) + "</div></div>" +
+          '<div class="flip-inner">' + cardBackHTML() + cardFaceHTML(c.card) + "</div></div>" +
           (c.position ? '<div class="flip-label">' + esc(c.position) + "</div>" : "") +
           '<div class="flip-name">' + esc(c.card.name_kr) + "</div>" +
           "</div>";
