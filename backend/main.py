@@ -66,7 +66,8 @@ def reading_classic(req: ReadingRequest):
 
 @app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
-    return reading_service.chat_reply(req.session_id, req.message)
+    history = [{"role": t.role, "content": t.content} for t in req.history]
+    return reading_service.chat_reply(req.session_id, req.message, history)
 
 
 # 정적 파일: 카드/캐릭터 이미지 → /assets, 프론트엔드 → /

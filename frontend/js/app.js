@@ -535,7 +535,11 @@
         '<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
       $log.scrollTop = $log.scrollHeight;
 
-      post("/api/chat", { session_id: r.session_id, message: text })
+      // 대화 기록을 서버에 함께 전달(서버는 무상태) — 방금 보낸 내 메시지는 제외, 최근 20턴만
+      var history = state.chat.slice(0, -1).map(function (m) {
+        return { role: m.role === "me" ? "user" : "assistant", content: m.text };
+      }).slice(-20);
+      post("/api/chat", { session_id: r.session_id, message: text, history: history })
         .then(function (data) { return data.reply; })
         .catch(function () { return "잠깐 별이 흐려졌어. 다시 한번 물어봐 줄래?"; })
         .then(function (reply) {

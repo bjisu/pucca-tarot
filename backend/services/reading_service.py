@@ -206,7 +206,7 @@ def today_reading(uid: str, question: str) -> dict:
         result = _fallback_today(card, question)
 
     summary = f"{result['one_line']} / {result['advice']}"
-    sid = session_service.create_session(question, [card], summary)
+    sid = session_service.create_token(question, [card], summary)
     return {
         "reading_type": "today",
         "crisis": False,
@@ -257,7 +257,7 @@ def classic_reading(uid: str, question: str) -> dict:
         {**p, "card": cards[i]} for i, p in enumerate(result["positions"])
     ]
     summary = f"{result['overall']} / 조언: {result['advice']}"
-    sid = session_service.create_session(question, cards, summary)
+    sid = session_service.create_token(question, cards, summary)
     return {
         "reading_type": "classic",
         "crisis": False,
@@ -270,22 +270,39 @@ def classic_reading(uid: str, question: str) -> dict:
     }
 
 
-def chat_reply(sid: str, message: str) -> dict:
-    session = session_service.get_session(sid)
-    if session is None:
+def chat_reply(
+    token: str, message: str, history: Optional[List[dict]] = None
+) -> dict:
+    payload = session_service.decode_token(token)
+    cards = card_service.cards_by_ids(payload.get("c", [])) if payload else []
+    if payload is None or not cards:
         return {
             "crisis": False,
             "reply": "앗, 대화가 너무 오래돼서 카드 기억이 흐려졌어. 홈으로 가서 새 리딩부터 해볼래?",
-            "session_id": sid,
+            "session_id": token,
             "llm_provider": "none",
         }
     if is_crisis(message):
         return {
             "crisis": True,
             "reply": CRISIS_RESPONSE,
-            "session_id": sid,
+            "session_id": token,
             "llm_provider": "safety",
         }
+
+    session = {
+        "question": payload.get("q", ""),
+        "cards": cards,
+        "reading_summary": payload.get("s", ""),
+    }
+    # 클라이언트가 보낸 대화 기록(user/assistant)만 신뢰, 최근 20턴으로 제한
+    clean_history = [
+        {"role": h["role"], "content": str(h["content"])}
+        for h in (history or [])
+        if isinstance(h, dict)
+        and h.get("role") in ("user", "assistant")
+        and str(h.get("content", "")).strip()
+    ][-20:]
 
     provider_name = _provider_name()
     reply = None
@@ -297,7 +314,7 @@ def chat_reply(sid: str, message: str) -> dict:
                 reading_summary=session["reading_summary"],
             )
             system = f"{_SYSTEM}\n\n{context}"
-            messages = [*session["history"], {"role": "user", "content": message}]
+            messages = [*clean_history, {"role": "user", "content": message}]
             provider = get_provider()
             reply = provider.generate(system, messages, max_tokens=800).strip()
             if not reply:
@@ -308,11 +325,9 @@ def chat_reply(sid: str, message: str) -> dict:
     if reply is None:
         reply = _fallback_chat(session)
 
-    session_service.append_history(sid, "user", message)
-    session_service.append_history(sid, "assistant", reply)
     return {
         "crisis": False,
         "reply": reply,
-        "session_id": sid,
+        "session_id": token,
         "llm_provider": provider_name,
     }
