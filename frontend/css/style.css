@@ -36,7 +36,7 @@ body {
 }
 
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-input { font: inherit; }
+input, textarea, select { font: inherit; font-size: 16px; }  /* 16px 미만이면 iOS 사파리가 포커스 시 자동 확대 */
 img { max-width: 100%; display: block; }
 
 .app {
@@ -256,7 +256,7 @@ img { max-width: 100%; display: block; }
   border-radius: 999px; outline: none;
   border: 1.5px solid var(--line);
   background: #fff; color: var(--ink);
-  font-size: 15px; font-weight: 600;
+  font-size: 16px; font-weight: 600;  /* 16px 미만이면 iOS 자동 줌 */
   box-shadow: 0 6px 16px rgba(97, 62, 34, .14);  /* 글로우 없이 부드럽게 떠 보이는 그림자 */
 }
 .q-input:focus { border-color: var(--red); }
@@ -447,7 +447,7 @@ img { max-width: 100%; display: block; }
 .chat-input {
   flex: 1; padding: 13px 16px; border-radius: 999px; outline: none;
   border: 1.5px solid var(--line);
-  background: #fff; color: var(--ink); font-size: 15px;
+  background: #fff; color: var(--ink); font-size: 16px;  /* 16px 미만이면 iOS 자동 줌 */
 }
 .chat-input:focus { border-color: var(--red); }
 .chat-input::placeholder { color: var(--ink-dim); }
