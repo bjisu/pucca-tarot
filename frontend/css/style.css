@@ -328,14 +328,21 @@ img { max-width: 100%; display: block; }
   cursor: pointer;
 }
 .deck-card.snap { transition: transform .28s cubic-bezier(.22,.9,.3,1.1), opacity .2s ease; }
+/* 겹친 카드 경계: 크림 테두리 + 왼쪽 방향 그림자로 위·아래 카드 사이 음영 경계를 만든다.
+   비중앙 카드는 살짝 어둡게(brightness .92) — 중앙 강조 대비도 함께 강화 */
 .deck-card .card-back {
-  width: 100%; box-shadow: 0 8px 18px rgba(97, 62, 34, .28);
-  transition: transform .25s ease, box-shadow .25s ease;
+  width: 100%;
+  border: 1.5px solid #f5e9d6;
+  filter: brightness(.92);
+  box-shadow:
+    -7px 5px 10px rgba(60, 30, 16, .38),
+    0 8px 18px rgba(97, 62, 34, .28);
+  transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
 }
 /* 중앙 카드: 살짝만 떠오르고 미묘하게 크게 + 은은한 글로우 — 부채꼴 흐름에서 튀지 않는 수준 */
 .deck-card.centered .card-back {
   transform: translateY(-7px) scale(1.06);
-  border-color: var(--red-deep);
+  filter: brightness(1);
   box-shadow:
     0 0 12px rgba(212, 148, 74, .3),
     0 10px 20px rgba(97, 62, 34, .28);

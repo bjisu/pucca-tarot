@@ -271,10 +271,10 @@
       return Math.min(Math.max(v, 0), els.length - 1);
     }
     /* 거대한 원(회전축 카드 위 560px 아래)의 윗부분 호를 따라 촘촘히 배치.
-       카드당 3.2° → 이웃 간격 약 31px(카드폭 96px과 겹침), 뷰포트 390px에 15장 안팎.
+       카드당 3.8° → 이웃 간격 약 37px(카드폭 96px과 겹침), 뷰포트 390px에 13장 안팎.
        호 배치는 rotate만 담당 — 중앙 카드 떠오름·확대·글로우는 CSS(.centered .card-back)가 처리.
        뷰포트 밖(중앙에서 8.5장 초과)은 opacity로 정리 — 화면 안 카드는 절대 페이드되지 않음 */
-    const STEP_DEG = 3.2;
+    const STEP_DEG = 3.8;
     const STEP_PX = 560 * Math.sin(STEP_DEG * Math.PI / 180); // 이웃 카드 가로 간격 ≈ 31px
     function layout(snap) {
       els.forEach(function (el, i) {
