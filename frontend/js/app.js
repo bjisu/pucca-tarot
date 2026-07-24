@@ -181,7 +181,7 @@
     function renderTabs() {
       $tabs.innerHTML = cats.map(function (c, i) {
         return '<button class="cat-tab' + (i === state.catIndex ? " active" : "") + '" data-i="' + i + '">' +
-          esc(c.name) + "</button>";
+          esc(c.name).replace(/·/g, " · ") + "</button>";
       }).join("");
       $tabs.querySelectorAll(".cat-tab").forEach(function (b) {
         b.addEventListener("click", function () {

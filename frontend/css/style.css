@@ -278,6 +278,9 @@ img { max-width: 100%; display: block; }
   margin: 18px -20px 8px; padding: 0 20px 6px;
 }
 .cat-tabs::-webkit-scrollbar { display: none; }
+/* iOS 등에서 가로 스크롤 컨테이너의 오른쪽 padding이 무시되는 문제 —
+   끝에 스페이서를 둬서 마지막 탭이 잘리지 않게 한다 */
+.cat-tabs::after { content: ""; flex: none; width: 14px; }
 .cat-tab {
   flex: none; padding: 8px 12px 10px;
   color: var(--ink-dim); font-size: 14.5px; font-weight: 600;
