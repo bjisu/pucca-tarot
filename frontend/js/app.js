@@ -10,7 +10,7 @@
   const $overlayText = document.getElementById("overlay-text");
 
   // 에셋 캐시 무효화 버전 — 같은 파일명으로 이미지를 교체하면 이 값을 올려주세요.
-  const ASSET_VER = "20260724-4";
+  const ASSET_VER = "20260724-5";
 
   /* ── 상태 (새로고침 대비 sessionStorage 유지) ── */
   const STORE_KEY = "pucca_state_v1";
