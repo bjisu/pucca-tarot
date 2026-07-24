@@ -109,14 +109,17 @@ img { max-width: 100%; display: block; }
   border-radius: 6.8% / 4.5%; overflow: hidden;
   box-shadow: 0 6px 16px rgba(97, 62, 34, .22);
 }
+/* 폴백 박스는 평소 완전 숨김 — 이미지 onerror 시 .card-face.noimg 로만 표시
+   (항상 깔아두면 iOS에서 이미지 가장자리 밖으로 크림 박스가 비쳐 보임) */
 .card-ph {
   position: absolute; inset: 0; z-index: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  display: none; flex-direction: column; align-items: center; justify-content: center;
   gap: 4px; padding: 8%; text-align: center;
   border-radius: 6.8% / 4.5%;
   border: 1.5px solid rgba(43, 26, 18, .55);
   background: linear-gradient(170deg, #fffdf8 0%, #f8eedc 100%);
 }
+.card-face.noimg .card-ph { display: flex; }
 .card-ph::before, .card-ph::after {
   content: ""; position: absolute; left: 6%; right: 6%;
   border: 1px solid rgba(179, 52, 42, .45); border-radius: 6px;

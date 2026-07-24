@@ -81,12 +81,14 @@
       "</div>";
   }
   function cardFaceHTML(card) {
+    // 폴백(.card-ph)은 평소 숨김 — 이미지 로드 실패 시에만 noimg 클래스로 표시
+    // (항상 깔려 있으면 iOS에서 이미지 가장자리 밖으로 크림 박스가 비쳐 보임)
     return '<div class="card-face">' +
       '<div class="card-ph">' +
       '<div class="card-ph-star">✦</div>' +
       '<div class="card-ph-name">' + esc(card.name_en) + "</div>" +
       "</div>" +
-      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(card.name_en) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
+      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(card.name_en) + '" loading="lazy" decoding="async" onerror="this.parentNode.classList.add(&quot;noimg&quot;);this.remove()">' +
       "</div>";
   }
 
