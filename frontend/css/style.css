@@ -125,7 +125,11 @@ img { max-width: 100%; display: block; }
 .card-ph::after { top: 6.5%; bottom: 6.5%; left: 9%; right: 9%; border-style: dotted; }
 .card-ph-star { color: var(--red); font-size: 1.2em; }
 .card-ph-name { font-weight: 800; font-size: .95em; color: var(--ink); line-height: 1.3; word-break: keep-all; }
-.card-face > img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
+/* 앞·뒷면 이미지 공통 — 원본이 정확히 2:3이라 contain으로 전체가 온전히 보인다(크롭 없음) */
+.card-face > img, .card-back > img {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%; object-fit: contain;
+}
 
 /* 카드 뒷면: 일러스트 속 레드 타로백과 동일한 무드 */
 .card-back {
@@ -143,11 +147,8 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: center;
   color: #fdf3e4; font-size: 1.6em; text-shadow: 0 0 10px rgba(255, 230, 200, .5);
 }
-/* 뒷면 이미지(assets/image/card.webp)가 있으면 오너먼트를 덮음 — 없으면 onerror로 제거되어 폴백 표시 */
-.card-back > img {
-  position: absolute; inset: 0; z-index: 1;
-  width: 100%; height: 100%; object-fit: cover;
-}
+/* 뒷면 이미지(assets/image/card.webp)는 위의 공통 img 규칙 사용 —
+   있으면 오너먼트를 덮고, 없으면 onerror로 제거되어 폴백 표시 */
 
 /* ── 홈 ─────────────────────────────────────
    웜화이트 메뉴 카드 + 딥레드 포인트 뱃지 */
@@ -367,17 +368,17 @@ img { max-width: 100%; display: block; }
 .result-q .badge { display: block; font-size: 11.5px; margin-bottom: 3px; }
 
 .result-cards { display: flex; justify-content: center; gap: 14px; margin-bottom: 8px; }
-.flip { width: 96px; perspective: 700px; }
+.flip { width: 96px; }
 .flip.big { width: 140px; }
-.flip-inner {
-  position: relative; width: 100%; aspect-ratio: 2 / 3;
-  transform-style: preserve-3d; transition: transform .8s cubic-bezier(.3,.1,.25,1);
-}
-.flip.flipped .flip-inner { transform: rotateY(180deg); }
-.flip .card-back, .flip .card-face {
-  position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
-}
-.flip .card-face { transform: rotateY(180deg); }
+.flip-inner { position: relative; width: 100%; aspect-ratio: 2 / 3; }
+/* iOS 사파리 3D 뒤집기(rotateY+backface) 버그로 앞면이 투명해지는 문제 →
+   2단계 scaleX 플립(가짜 3D)으로 교체: 뒷면이 접힌 뒤(0.4s) 앞면이 펴진다(+0.4s).
+   보기에는 뒤집기와 거의 같고 WebKit에서 절대 깨지지 않는다 */
+.flip .card-back, .flip .card-face { position: absolute; inset: 0; }
+.flip .card-back { transform: scaleX(1); transition: transform .4s ease-in; }
+.flip .card-face { transform: scaleX(0); transition: transform .4s ease-out; }
+.flip.flipped .card-back { transform: scaleX(0); }
+.flip.flipped .card-face { transform: scaleX(1); transition-delay: .4s; }
 .flip-label {
   text-align: center; margin-top: 8px;
   font-size: 12px; color: var(--red); font-weight: 700;
