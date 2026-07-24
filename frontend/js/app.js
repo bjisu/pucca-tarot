@@ -74,11 +74,6 @@
       '<img src="/assets/character/pucca_main.png" alt="" onerror="this.remove()">' +
       "</div>";
   }
-  // 카드 표시 이름 — 메이저는 한국어 정식명(광대 등), 마이너는 name_en 정식 영문
-  // ("2 Cups" 같은 숫자+슈트 혼합 표기(name_kr) 대신 "Two of Cups"를 그대로 쓴다)
-  function cardName(card) {
-    return card.arcana === "Major Arcana" ? card.name_kr : card.name_en;
-  }
   function cardBackHTML() {
     // 카드 뒷면: assets/image/card.webp가 있으면 이미지, 없으면 CSS 오너먼트 폴백
     return '<div class="card-back">' +
@@ -89,10 +84,9 @@
     return '<div class="card-face">' +
       '<div class="card-ph">' +
       '<div class="card-ph-star">✦</div>' +
-      '<div class="card-ph-name">' + esc(cardName(card)) + "</div>" +
-      (cardName(card) !== card.name_en ? '<div class="card-ph-en">' + esc(card.name_en) + "</div>" : "") +
+      '<div class="card-ph-name">' + esc(card.name_en) + "</div>" +
       "</div>" +
-      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(cardName(card)) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
+      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(card.name_en) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
       "</div>";
   }
 
@@ -421,7 +415,7 @@
         return '<div><div class="flip' + (isToday ? " big" : "") + '" id="flip' + i + '">' +
           '<div class="flip-inner">' + cardBackHTML() + cardFaceHTML(c.card) + "</div></div>" +
           (c.position ? '<div class="flip-label">' + esc(c.position) + "</div>" : "") +
-          '<div class="flip-name">' + esc(cardName(c.card)) + "</div>" +
+          '<div class="flip-name">' + esc(c.card.name_en) + "</div>" +
           "</div>";
       }).join("") +
       "</div>";
@@ -469,7 +463,7 @@
       return '<div class="section"><h3>' + esc(title) + "</h3><p>" + esc(body) + "</p>" + kws + "</div>";
     }
     function sectionWithCard(title, body, card) {
-      return '<div class="section"><h3>' + esc(title) + " · " + esc(cardName(card)) + "</h3>" +
+      return '<div class="section"><h3>' + esc(title) + " · " + esc(card.name_en) + "</h3>" +
         '<div class="sec-card">' + cardFaceHTML(card) + "<p>" + esc(body) + "</p></div></div>";
     }
   }
