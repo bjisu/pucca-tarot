@@ -132,7 +132,7 @@
       '<section class="screen home-screen">' +
       menuCard("Classic Tarot", "클래식 타로", "카드 3장으로 구체적으로 운명을 점쳐줄게", "classic", "content_1.webp") +
       menuCard("Today's Tarot", "오늘의 타로", "오늘의 운세를 카드 1장으로 간편하게 점쳐줄게", "today", "content_2.webp") +
-      menuCard("Tarot Card List", "타로카드 리스트", "타로를 알고 보면 더 재밌어!", "dex", "content_3.webp") +
+      menuCard("Tarot Card List", "타로 카드 도감", "타로를 알고 보면 더 재밌어!", "dex", "content_3.webp") +
       "</section>";
 
     $app.querySelectorAll("[data-menu]").forEach(function (el) {
@@ -517,7 +517,7 @@
       const list = DATA.cards.cards.filter(DEX_TABS[state.dexTab].filter);
       $grid.innerHTML = list.map(function (c) {
         return '<figure class="dex-item" data-id="' + c.id + '">' + cardFaceHTML(c) +
-          "<figcaption>" + esc(cardName(c)) + "</figcaption></figure>";
+          "<figcaption>" + esc(c.name_en) + "</figcaption></figure>";
       }).join("");
       $grid.querySelectorAll(".dex-item").forEach(function (f) {
         f.addEventListener("click", function () {
@@ -535,8 +535,7 @@
       '<section class="screen dex-detail">' +
       '<div class="dex-head"><button class="back-chevron" id="detailBack" aria-label="뒤로가기"></button></div>' +
       '<div class="dex-detail-card">' + cardFaceHTML(card) + "</div>" +
-      "<h2>" + esc(cardName(card)) + "</h2>" +
-      (cardName(card) !== card.name_en ? '<div class="en">' + esc(card.name_en) + "</div>" : "") +
+      "<h2>" + esc(card.name_en) + "</h2>" +
       '<div class="arcana-tag">' + esc(card.arcana) + (card.suit ? " · " + esc(card.suit) : "") + "</div>" +
       section("카드의 의미", card.meaning) +
       section("한 줄 리딩", card.reading_sentence) +
