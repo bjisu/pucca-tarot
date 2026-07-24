@@ -103,7 +103,7 @@ img { max-width: 100%; display: block; }
 
 /* ── 카드 (앞면/뒷면 공통) ─────────────────── */
 .card-face, .card-back {
-  position: relative; aspect-ratio: 3 / 5;
+  position: relative; aspect-ratio: 2 / 3;
   border-radius: 10px; overflow: hidden;
   border: 1.5px solid rgba(43, 26, 18, .55);
   background: linear-gradient(170deg, #fffdf8 0%, #f8eedc 100%);
@@ -299,7 +299,7 @@ img { max-width: 100%; display: block; }
 /* 가로 잘림은 deck-area(뷰포트 풀블리드)에서만 일어나야 하므로 여기선 overflow 주지 않는다 */
 .slots { display: flex; justify-content: center; gap: 14px; margin: 22px 0 6px; }
 .slot {
-  width: 88px; aspect-ratio: 3 / 5;
+  width: 88px; aspect-ratio: 2 / 3;
   border-radius: 10px;
   border: 1.5px dashed #d9c5a4;
   display: flex; align-items: center; justify-content: center;
@@ -359,7 +359,7 @@ img { max-width: 100%; display: block; }
 .flip { width: 96px; perspective: 700px; }
 .flip.big { width: 140px; }
 .flip-inner {
-  position: relative; width: 100%; aspect-ratio: 3 / 5;
+  position: relative; width: 100%; aspect-ratio: 2 / 3;
   transform-style: preserve-3d; transition: transform .8s cubic-bezier(.3,.1,.25,1);
 }
 .flip.flipped .flip-inner { transform: rotateY(180deg); }

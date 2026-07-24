@@ -10,7 +10,7 @@
   const $overlayText = document.getElementById("overlay-text");
 
   // 에셋 캐시 무효화 버전 — 같은 파일명으로 이미지를 교체하면 이 값을 올려주세요.
-  const ASSET_VER = "20260714-2";
+  const ASSET_VER = "20260724-1";
 
   /* ── 상태 (새로고침 대비 sessionStorage 유지) ── */
   const STORE_KEY = "pucca_state_v1";
@@ -88,7 +88,7 @@
       '<div class="card-ph-name">' + esc(card.name_kr) + "</div>" +
       '<div class="card-ph-en">' + esc(card.name_en) + "</div>" +
       "</div>" +
-      '<img src="/assets/' + esc(card.image) + '" alt="' + esc(card.name_kr) + '" onerror="this.remove()">' +
+      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(card.name_kr) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
       "</div>";
   }
 
