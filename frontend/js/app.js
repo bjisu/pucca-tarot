@@ -181,7 +181,7 @@
     function renderTabs() {
       $tabs.innerHTML = cats.map(function (c, i) {
         return '<button class="cat-tab' + (i === state.catIndex ? " active" : "") + '" data-i="' + i + '">' +
-          c.emoji + " " + esc(c.name) + "</button>";
+          esc(c.name) + "</button>";
       }).join("");
       $tabs.querySelectorAll(".cat-tab").forEach(function (b) {
         b.addEventListener("click", function () {
@@ -480,14 +480,12 @@
   }
 
   /* ═══════════ 타로 카드 도감 ═══════════ */
-  /* 탭 이모지는 구형 기기 호환을 위해 유니코드 6~8 범위만 사용
-     (U+1FA84 마술봉, U+1FA99 동전은 유니코드 13이라 구형 기기에서 네모로 깨짐) */
   const DEX_TABS = [
-    { label: "🌟 Major Arcana", filter: function (c) { return c.arcana === "Major Arcana"; } },
-    { label: "🔥 Wands", filter: function (c) { return c.suit === "Wands"; } },
-    { label: "🍷 Cups", filter: function (c) { return c.suit === "Cups"; } },
-    { label: "🗡️ Swords", filter: function (c) { return c.suit === "Swords"; } },
-    { label: "💰 Pentacles", filter: function (c) { return c.suit === "Pentacles"; } },
+    { label: "Major Arcana", filter: function (c) { return c.arcana === "Major Arcana"; } },
+    { label: "Wands", filter: function (c) { return c.suit === "Wands"; } },
+    { label: "Cups", filter: function (c) { return c.suit === "Cups"; } },
+    { label: "Swords", filter: function (c) { return c.suit === "Swords"; } },
+    { label: "Pentacles", filter: function (c) { return c.suit === "Pentacles"; } },
   ];
 
   function renderDex() {
