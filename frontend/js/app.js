@@ -354,7 +354,7 @@
       });
       setTimeout(function () {
         fly.remove();
-        slot.style.borderStyle = "solid";
+        slot.classList.add("filled");
         slot.innerHTML = cardBackHTML();
         picked++;
         picking = false;
