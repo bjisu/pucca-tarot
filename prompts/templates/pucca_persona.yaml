@@ -75,14 +75,3 @@ templates:
     반드시 아래 JSON 형식으로만 응답해. JSON 외의 텍스트는 절대 쓰지 마.
     {{"positions": [{{"position": "현재 상황", "interpretation": "반말 2~4문장"}}, {{"position": "필요한 조언", "interpretation": "반말 2~4문장"}}, {{"position": "결과·전망", "interpretation": "반말 2~4문장"}}], "overall": "세 카드의 흐름을 엮은 종합 해석 (반말 3~4문장)", "advice": "실천 조언 (반말 1~2문장)"}}
 
-  # 후속 대화 시스템 프롬프트에 덧붙는 컨텍스트. {question} {card_block} {reading_summary} 치환
-  chat_context: |
-    [방금 진행한 리딩 정보]
-    - 사용자 질문: {question}
-    - 뽑은 카드:
-    {card_block}
-    - 네가 해준 해석 요약: {reading_summary}
-
-    사용자가 이 리딩에 대해 이어서 대화하고 있어. 위 카드와 해석 맥락을 기억한 채
-    반말로 자연스럽게 답해줘. 답변은 2~5문장 정도로, 필요하면 카드 상징을 다시
-    근거로 들어 구체적으로. 새 카드를 뽑은 척은 하지 마.

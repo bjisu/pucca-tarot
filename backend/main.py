@@ -11,8 +11,6 @@ from fastapi.staticfiles import StaticFiles
 
 from .config import ASSETS_DIR, FRONTEND_DIR
 from .schemas import (
-    ChatRequest,
-    ChatResponse,
     ClassicReadingResponse,
     CrisisResponse,
     ReadingRequest,
@@ -62,12 +60,6 @@ def reading_today(req: ReadingRequest):
 )
 def reading_classic(req: ReadingRequest):
     return reading_service.classic_reading(req.uuid or "anonymous", req.question)
-
-
-@app.post("/api/chat", response_model=ChatResponse)
-def chat(req: ChatRequest):
-    history = [{"role": t.role, "content": t.content} for t in req.history]
-    return reading_service.chat_reply(req.session_id, req.message, history)
 
 
 # 정적 파일: 카드/캐릭터 이미지 → /assets, 프론트엔드 → /

@@ -22,7 +22,7 @@
 - [x] 카드 앞면 이미지 78장 — `assets/cards/*.webp`(600×900) 적용 완료 (2026-07-24)
 - [ ] 뿌까 대화 아바타 이미지 (`assets/character/pucca_main.png` — 넣으면 자동 적용)
 - [x] 이미지 압축 — 카드 78장·card·content_1~3 전부 WebP 전환 완료 (2026-07-24). 카드 뒷면 = `assets/image/card.webp`
-- [ ] 결과·대화·도감 화면 톤 미세 통일 검토 (전역 라이트 테마는 적용됨)
+- [ ] 결과·도감 화면 톤 미세 통일 검토 (전역 라이트 테마는 적용됨)
 - [ ] `.env`에 LLM API 키 입력 시 AI 해석 활성화 (현재 내장 폴백 해석 동작 중)
 - [ ] 뿌까 라이선스 확정 전까지 GitHub 저장소 Private 유지 권장
 
@@ -31,9 +31,10 @@
 ## 아키텍처 요약
 
 - **백엔드**: FastAPI (`backend/`) — LLM Factory(`backend/llm/`, anthropic/openai/gemini, 키 없으면 폴백 해석),
-  페르소나·프롬프트는 `prompts/templates/pucca_persona.yaml`, 세션은 인메모리, 오늘의 카드는 `runtime/daily_cards.json`(uuid+날짜).
-- **프론트**: 바닐라 JS SPA (`frontend/`) — 해시 라우팅(#/ → #/question → #/draw → #/result → #/chat, #/dex).
-  API: /api/cards, /api/categories, /api/reading/today, /api/reading/classic, /api/chat, /api/health.
+  페르소나·프롬프트는 `prompts/templates/pucca_persona.yaml`, 오늘의 카드는 uuid+날짜 해시(결정론적, 저장 없음).
+- **프론트**: 바닐라 JS SPA (`frontend/`) — 해시 라우팅(#/ → #/question → #/draw → #/result, #/dex).
+  API: /api/cards, /api/categories, /api/reading/today, /api/reading/classic, /api/health.
+  (후속 대화(챗) 기능은 2026-07-24 완전 제거 — /api/chat, 세션 토큰, chat_context 템플릿 삭제)
 - **데이터**: `data/tarot_cards.json`(78장), `data/question_categories.json`(8카테고리) — 원본 유지, 화면에서 질문 이모지는 미표시.
 
 ## 디자인 컨벤션 (현재 확정 상태)
@@ -65,7 +66,7 @@ Edge 헤드리스 + puppeteer-core로 실제 화면 스크린샷 검증:
 - puppeteer-core는 세션 scratchpad에 설치해 사용 (`npm i puppeteer-core`, Edge 경로:
   `C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`).
 - 전 플로우 스크립트 패턴: 홈 → `.menu-card` 클릭 → `.q-item` → `#qGo` → `.deck-card.centered` 3회 클릭(간격 1.1s)
-  → `.result-q` 대기 → `#goChat` → 대화 → `location.hash='#/dex'`.
+  → `.result-q` 대기 → `location.hash='#/dex'`.
 - 뷰포트 390×844(모바일 기준). API 검증은 `.venv` 파이썬으로 urllib POST (한글 출력은 `PYTHONIOENCODING=utf-8`).
 
 ## 작업 이력 (요약)

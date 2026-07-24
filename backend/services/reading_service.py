@@ -11,7 +11,7 @@ import yaml
 
 from ..config import PROMPTS_DIR
 from ..llm.factory import get_provider
-from . import card_service, session_service
+from . import card_service
 
 logger = logging.getLogger("pucca")
 
@@ -167,17 +167,6 @@ def _fallback_classic(cards: List[dict], question: str) -> dict:
     return {"positions": positions, "overall": overall, "advice": advice}
 
 
-def _fallback_chat(session: dict) -> str:
-    names = ", ".join(f"'{c['name_kr']}'" for c in session["cards"])
-    kw = session["cards"][0]["keywords"][0]
-    return (
-        f"지금은 별이 살짝 흐려서 깊은 이야기는 어렵지만, 아까 뽑은 {names} 카드 기억하지? "
-        f"{_banmal(session['cards'][0]['meaning'])} "
-        f"'{kw}'{_josa(kw, '이라는', '라는')} 키워드를 잊지 말고 오늘을 보내봐. "
-        f"(관리자가 .env에 LLM API 키를 넣으면 나랑 훨씬 자세히 대화할 수 있어!)"
-    )
-
-
 # ── 리딩 생성 ────────────────────────────────────────────────
 
 def today_reading(uid: str, question: str) -> dict:
@@ -205,15 +194,12 @@ def today_reading(uid: str, question: str) -> dict:
     if result is None:
         result = _fallback_today(card, question)
 
-    summary = f"{result['one_line']} / {result['advice']}"
-    sid = session_service.create_token(question, [card], summary)
     return {
         "reading_type": "today",
         "crisis": False,
         "question": question,
         "card": card,
         **result,
-        "session_id": sid,
         "llm_provider": provider_name,
     }
 
@@ -256,8 +242,6 @@ def classic_reading(uid: str, question: str) -> dict:
     positions_out = [
         {**p, "card": cards[i]} for i, p in enumerate(result["positions"])
     ]
-    summary = f"{result['overall']} / 조언: {result['advice']}"
-    sid = session_service.create_token(question, cards, summary)
     return {
         "reading_type": "classic",
         "crisis": False,
@@ -265,69 +249,5 @@ def classic_reading(uid: str, question: str) -> dict:
         "positions": positions_out,
         "overall": result["overall"],
         "advice": result["advice"],
-        "session_id": sid,
-        "llm_provider": provider_name,
-    }
-
-
-def chat_reply(
-    token: str, message: str, history: Optional[List[dict]] = None
-) -> dict:
-    payload = session_service.decode_token(token)
-    cards = card_service.cards_by_ids(payload.get("c", [])) if payload else []
-    if payload is None or not cards:
-        return {
-            "crisis": False,
-            "reply": "앗, 대화가 너무 오래돼서 카드 기억이 흐려졌어. 홈으로 가서 새 리딩부터 해볼래?",
-            "session_id": token,
-            "llm_provider": "none",
-        }
-    if is_crisis(message):
-        return {
-            "crisis": True,
-            "reply": CRISIS_RESPONSE,
-            "session_id": token,
-            "llm_provider": "safety",
-        }
-
-    session = {
-        "question": payload.get("q", ""),
-        "cards": cards,
-        "reading_summary": payload.get("s", ""),
-    }
-    # 클라이언트가 보낸 대화 기록(user/assistant)만 신뢰, 최근 20턴으로 제한
-    clean_history = [
-        {"role": h["role"], "content": str(h["content"])}
-        for h in (history or [])
-        if isinstance(h, dict)
-        and h.get("role") in ("user", "assistant")
-        and str(h.get("content", "")).strip()
-    ][-20:]
-
-    provider_name = _provider_name()
-    reply = None
-    if provider_name != "fallback":
-        try:
-            context = _TEMPLATES["chat_context"].format(
-                question=session["question"],
-                card_block=_card_block(session["cards"]),
-                reading_summary=session["reading_summary"],
-            )
-            system = f"{_SYSTEM}\n\n{context}"
-            messages = [*clean_history, {"role": "user", "content": message}]
-            provider = get_provider()
-            reply = provider.generate(system, messages, max_tokens=800).strip()
-            if not reply:
-                raise ValueError("empty reply")
-        except Exception:
-            logger.exception("chat LLM failed — using fallback")
-            provider_name = "fallback"
-    if reply is None:
-        reply = _fallback_chat(session)
-
-    return {
-        "crisis": False,
-        "reply": reply,
-        "session_id": token,
         "llm_provider": provider_name,
     }

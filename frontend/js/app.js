@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════
    뿌까 오라클 — 프론트엔드 SPA (해시 라우팅)
-   흐름: 홈 → 질문 선택 → 카드 뽑기(스와이프) → 결과 → 뿌까와 대화
+   흐름: 홈 → 질문 선택 → 카드 뽑기(스와이프) → 결과
    ═══════════════════════════════════════════════════════════ */
 (function () {
   "use strict";
@@ -19,7 +19,6 @@
     question: "",
     catIndex: 0,
     reading: null,       // 리딩 결과 전체
-    chat: [],            // [{role:'pucca'|'me', text}]
     dexTab: 0,
   };
   let DATA = { cards: null, categories: null };
@@ -108,10 +107,6 @@
     if (hash === "#/result") {
       if (!state.reading) return go("#/");
       return renderResult();
-    }
-    if (hash === "#/chat") {
-      if (!state.reading) return go("#/");
-      return renderChat();
     }
     if (hash === "#/dex") return renderDex();
     if (hash.indexOf("#/dex/") === 0) {
@@ -376,7 +371,6 @@
           hideOverlay();
           if (data.crisis) { renderCrisis(data.message); return; }
           state.reading = data;
-          state.chat = [];
           saveState();
           go("#/result");
         })
@@ -443,8 +437,7 @@
 
     html +=
       '<div class="result-actions result-fade" style="animation-delay:' + (delayBase + 1.3) + 's">' +
-      '<button class="btn btn-gold" id="goChat">뿌까랑 더 얘기하기</button>' +
-      '<button class="btn btn-ghost" id="goHome">홈으로</button>' +
+      '<button class="btn btn-gold" id="goHome">홈으로</button>' +
       "</div></section>";
 
     $app.innerHTML = html;
@@ -456,7 +449,6 @@
       }, 500 + i * 650);
     });
 
-    document.getElementById("goChat").addEventListener("click", function () { go("#/chat"); });
     document.getElementById("goHome").addEventListener("click", function () { go("#/"); });
 
     function wrapFade(inner, delay) {
@@ -475,93 +467,6 @@
       return '<div class="section"><h3>' + esc(title) + " · " + esc(card.name_kr) + "</h3>" +
         '<div class="sec-card">' + cardFaceHTML(card) + "<p>" + esc(body) + "</p></div></div>";
     }
-  }
-
-  /* ═══════════ 뿌까와 대화 ═══════════ */
-  function renderChat() {
-    const r = state.reading;
-    const cardNames = (r.reading_type === "today" ? [r.card] : r.positions.map(function (p) { return p.card; }))
-      .map(function (c) { return c.name_kr; }).join(" · ");
-
-    if (!state.chat.length) {
-      state.chat.push({
-        role: "pucca",
-        text: "카드는 잘 봤지? 더 궁금한 게 있으면 뭐든 물어봐. 방금 뽑은 카드 기억하고 있으니까!",
-      });
-      saveState();
-    }
-
-    $app.innerHTML =
-      '<section class="screen chat-screen">' +
-      '<div class="chat-nav">' +
-      '<button class="btn btn-ghost" id="chatHome">홈으로</button>' +
-      '<button class="btn btn-ghost" id="chatNew">새 리딩</button>' +
-      "</div>" +
-      '<div class="chat-summary"><b>' + esc(r.question) + "</b><br>뽑은 카드: " + esc(cardNames) + "</div>" +
-      '<div class="chat-log" id="chatLog"></div>' +
-      '<div class="chat-input-row">' +
-      '<input id="chatInput" class="chat-input" type="text" maxlength="500" placeholder="뿌까에게 물어보기">' +
-      '<button id="chatSend" class="chat-send">↑</button>' +
-      "</div></section>";
-
-    const $log = document.getElementById("chatLog");
-    const $input = document.getElementById("chatInput");
-    const $send = document.getElementById("chatSend");
-
-    function bubble(role, text) {
-      // 역할 클래스는 아바타 컴포넌트(.pucca)와 충돌하지 않게 them/me 사용
-      return '<div class="msg ' + (role === "me" ? "me" : "them") + '">' +
-        (role === "pucca" ? puccaHTML("sm") : "") +
-        '<div class="bubble">' + esc(text) + "</div></div>";
-    }
-    function renderLog() {
-      $log.innerHTML = state.chat.map(function (m) { return bubble(m.role, m.text); }).join("");
-      $log.scrollTop = $log.scrollHeight;
-    }
-    renderLog();
-
-    let sending = false;
-    function send() {
-      const text = $input.value.trim();
-      if (!text || sending) return;
-      sending = true;
-      $send.disabled = true;
-      $input.value = "";
-      state.chat.push({ role: "me", text: text });
-      saveState();
-      renderLog();
-      $log.insertAdjacentHTML("beforeend",
-        '<div class="msg them" id="typing">' + puccaHTML("sm") +
-        '<div class="bubble"><span class="typing"><i></i><i></i><i></i></span></div></div>');
-      $log.scrollTop = $log.scrollHeight;
-
-      // 대화 기록을 서버에 함께 전달(서버는 무상태) — 방금 보낸 내 메시지는 제외, 최근 20턴만
-      var history = state.chat.slice(0, -1).map(function (m) {
-        return { role: m.role === "me" ? "user" : "assistant", content: m.text };
-      }).slice(-20);
-      post("/api/chat", { session_id: r.session_id, message: text, history: history })
-        .then(function (data) { return data.reply; })
-        .catch(function () { return "잠깐 별이 흐려졌어. 다시 한번 물어봐 줄래?"; })
-        .then(function (reply) {
-          const t = document.getElementById("typing");
-          if (t) t.remove();
-          state.chat.push({ role: "pucca", text: reply });
-          saveState();
-          renderLog();
-          sending = false;
-          $send.disabled = false;
-          $input.focus();
-        });
-    }
-    $send.addEventListener("click", send);
-    $input.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
-
-    document.getElementById("chatHome").addEventListener("click", function () { go("#/"); });
-    document.getElementById("chatNew").addEventListener("click", function () {
-      state.question = ""; state.reading = null; state.chat = [];
-      saveState();
-      go("#/question");
-    });
   }
 
   /* ═══════════ 타로 카드 도감 ═══════════ */

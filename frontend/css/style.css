@@ -65,8 +65,6 @@ img { max-width: 100%; display: block; }
 }
 .pucca-fb { font-weight: 800; color: var(--red); font-size: 16px; letter-spacing: .05em; }
 .pucca img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.pucca.sm { width: 40px; height: 40px; border-width: 1.5px; }
-.pucca.sm .pucca-fb { font-size: 11px; }
 
 .btn {
   display: block; width: 100%;
@@ -407,65 +405,6 @@ img { max-width: 100%; display: block; }
 
 .result-actions { margin-top: 26px; display: flex; flex-direction: column; gap: 10px; }
 .result-fade { opacity: 0; animation: fadein .6s ease forwards; }
-
-/* ── 대화 ──────────────────────────────────── */
-.chat-screen { height: calc(100vh - 52px); height: calc(100dvh - 52px); }
-.chat-summary {
-  padding: 12px 16px; border-radius: var(--radius-md);
-  background: var(--surface); border: 1px solid var(--line);
-  box-shadow: 0 3px 10px rgba(97, 62, 34, .07);
-  font-size: 13px; color: var(--ink-soft); margin-bottom: 12px;
-}
-.chat-summary b { color: var(--red); font-weight: 800; }
-.chat-nav { display: flex; gap: 8px; margin-bottom: 12px; }
-.chat-nav .btn { padding: 10px 12px; font-size: 13.5px; border-radius: 10px; }
-
-.chat-log { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 4px 2px 12px; }
-.msg { display: flex; gap: 8px; max-width: 88%; }
-.msg .bubble {
-  padding: 11px 14px; border-radius: 16px; font-size: 14.5px;
-  word-break: break-word; white-space: pre-line;
-  color: var(--ink);
-}
-.msg.them { align-self: flex-start; }
-.msg.them .bubble {
-  background: var(--red-tint);
-  border: 1px solid rgba(179, 52, 42, .22);
-  border-top-left-radius: 5px;
-}
-.msg.me { align-self: flex-end; }
-.msg.me .bubble {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: 0 2px 8px rgba(97, 62, 34, .08);
-  font-weight: 600;
-  border-top-right-radius: 5px;
-}
-.typing { display: inline-flex; gap: 4px; padding: 4px 2px; }
-.typing i { width: 6px; height: 6px; border-radius: 50%; background: rgba(43, 26, 18, .45); animation: blink 1s infinite; }
-.typing i:nth-child(2) { animation-delay: .18s; }
-.typing i:nth-child(3) { animation-delay: .36s; }
-@keyframes blink { 0%, 70%, 100% { opacity: .25; } 35% { opacity: 1; } }
-
-.chat-input-row {
-  display: flex; gap: 8px; padding-top: 10px;
-  border-top: 1px solid var(--line);
-}
-.chat-input {
-  flex: 1; padding: 13px 16px; border-radius: 999px; outline: none;
-  border: 1.5px solid var(--line);
-  background: #fff; color: var(--ink); font-size: 16px;  /* 16px 미만이면 iOS 자동 줌 */
-}
-.chat-input:focus { border-color: var(--red); }
-.chat-input::placeholder { color: var(--ink-dim); }
-.chat-send {
-  flex: none; width: 48px; height: 48px; border-radius: 50%;
-  background: linear-gradient(160deg, var(--red), var(--red-deep));
-  color: #fdf3e4; font-size: 19px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 5px 14px rgba(156, 42, 33, .3);
-}
-.chat-send:disabled { filter: grayscale(.5) opacity(.6); }
 
 /* ── 도감 ──────────────────────────────────── */
 .dex-head { display: flex; align-items: center; gap: 4px; margin-bottom: 8px; }

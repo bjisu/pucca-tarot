@@ -30,7 +30,6 @@ class TodayReadingResponse(BaseModel):
     one_line: str
     interpretation: str
     advice: str
-    session_id: str
     llm_provider: str
 
 
@@ -47,28 +46,9 @@ class ClassicReadingResponse(BaseModel):
     positions: List[PositionReading]
     overall: str
     advice: str
-    session_id: str
     llm_provider: str
 
 
 class CrisisResponse(BaseModel):
     crisis: bool = True
     message: str
-
-
-class ChatTurn(BaseModel):
-    role: str  # "user" | "assistant"
-    content: str = Field(max_length=4000)
-
-
-class ChatRequest(BaseModel):
-    session_id: str
-    message: str = Field(min_length=1, max_length=1000)
-    history: List[ChatTurn] = Field(default_factory=list)
-
-
-class ChatResponse(BaseModel):
-    crisis: bool = False
-    reply: str
-    session_id: str
-    llm_provider: str

@@ -7,7 +7,7 @@ import hashlib
 import json
 import random
 from datetime import date
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 from ..config import DATA_DIR
 
@@ -17,7 +17,6 @@ with open(_CARDS_PATH, encoding="utf-8") as f:
     _DECK = json.load(f)
 
 CARDS: List[dict] = _DECK["cards"]
-_BY_ID: Dict[int, dict] = {c["id"]: c for c in CARDS}
 
 
 def deck_payload() -> dict:
@@ -26,11 +25,6 @@ def deck_payload() -> dict:
 
 def draw_cards(count: int) -> List[dict]:
     return random.sample(CARDS, count)
-
-
-def cards_by_ids(ids: List[int]) -> List[dict]:
-    """id 목록으로 카드 객체를 복원한다. 알 수 없는 id 는 건너뛴다."""
-    return [_BY_ID[i] for i in ids if i in _BY_ID]
 
 
 def get_daily_card(uid: str) -> Tuple[dict, bool]:
