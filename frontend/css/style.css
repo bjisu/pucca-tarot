@@ -130,6 +130,11 @@ img { max-width: 100%; display: block; }
   position: absolute; inset: 0; z-index: 1;
   width: 100%; height: 100%; object-fit: contain;
 }
+/* 앞면 캔버스의 흰 귀퉁이 제거 — 그림 프레임의 라운드(폭의 6.8%, 실측)와 일치하는
+   radius를 이미지 자체에 적용해 흰 부분만 잘려 나간다 (컨테이너 클리핑에 의존하지 않음
+   — iOS 사파리에서 overflow+radius 클리핑이 무시되는 경우 대비).
+   세로 %는 높이 기준이라 6.8×(2/3)≈4.5%. 뒷면은 귀퉁이까지 풀블리드라 불필요 */
+.card-face > img { border-radius: 6.8% / 4.5%; }
 
 /* 카드 뒷면: 일러스트 속 레드 타로백과 동일한 무드 */
 .card-back {
