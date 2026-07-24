@@ -443,8 +443,14 @@ img { max-width: 100%; display: block; }
   position: fixed; inset: 0; z-index: 100;
   background: var(--bg);   /* 페이지와 같은 크림 단색 */
   display: flex; align-items: center; justify-content: center;
+  opacity: 1;
+  transition: opacity .35s ease;
 }
-.overlay.hidden { display: none; }
+/* display:none 대신 opacity+visibility — 로딩 → 결과가 부드럽게 페이드 전환 */
+.overlay.hidden {
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .35s ease, visibility 0s .35s;
+}
 .overlay-inner { text-align: center; }
 /* 애니메이션 내장 하트 SVG — 화면 폭의 45% (최대 210px) 중앙 배치 */
 .loading-heart {

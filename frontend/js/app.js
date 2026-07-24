@@ -361,29 +361,38 @@
       }, 580);
     }
 
-    /* 서버에 리딩 요청 */
+    /* 서버에 리딩 요청 — 응답이 빨라도 로딩 화면을 최소 2초는 보여준다 */
     function submitReading() {
       showOverlay("뿌까가 카드를 읽고 있어...");
+      const startedAt = Date.now();
+      const MIN_LOADING_MS = 2000;
+      function afterMinLoading(fn) {
+        setTimeout(fn, Math.max(0, MIN_LOADING_MS - (Date.now() - startedAt)));
+      }
       const path = state.mode === "today" ? "/api/reading/today" : "/api/reading/classic";
       post(path, { uuid: getUuid(), question: state.question })
         .then(function (data) {
-          hideOverlay();
-          if (data.crisis) { renderCrisis(data.message); return; }
-          state.reading = data;
-          saveState();
-          go("#/result");
+          afterMinLoading(function () {
+            hideOverlay();
+            if (data.crisis) { renderCrisis(data.message); return; }
+            state.reading = data;
+            saveState();
+            go("#/result");
+          });
         })
         .catch(function () {
-          hideOverlay();
-          $app.innerHTML =
-            '<section class="screen"><div class="error-box">' +
-            "<p>잠깐 별이 흐려졌어, 다시 해볼래?</p>" +
-            '<div class="btn-row">' +
-            '<button class="btn btn-ghost" id="errHome">처음으로</button>' +
-            '<button class="btn btn-gold" id="errRetry">다시 시도</button>' +
-            "</div></div></section>";
-          document.getElementById("errRetry").addEventListener("click", submitReading);
-          document.getElementById("errHome").addEventListener("click", function () { go("#/"); });
+          afterMinLoading(function () {
+            hideOverlay();
+            $app.innerHTML =
+              '<section class="screen"><div class="error-box">' +
+              "<p>잠깐 별이 흐려졌어, 다시 해볼래?</p>" +
+              '<div class="btn-row">' +
+              '<button class="btn btn-ghost" id="errHome">처음으로</button>' +
+              '<button class="btn btn-gold" id="errRetry">다시 시도</button>' +
+              "</div></div></section>";
+            document.getElementById("errRetry").addEventListener("click", submitReading);
+            document.getElementById("errHome").addEventListener("click", function () { go("#/"); });
+          });
         });
     }
   }
