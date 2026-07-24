@@ -74,6 +74,11 @@
       '<img src="/assets/character/pucca_main.png" alt="" onerror="this.remove()">' +
       "</div>";
   }
+  // 카드 표시 이름 — 메이저는 한국어 정식명(광대 등), 마이너는 name_en 정식 영문
+  // ("2 Cups" 같은 숫자+슈트 혼합 표기(name_kr) 대신 "Two of Cups"를 그대로 쓴다)
+  function cardName(card) {
+    return card.arcana === "Major Arcana" ? card.name_kr : card.name_en;
+  }
   function cardBackHTML() {
     // 카드 뒷면: assets/image/card.webp가 있으면 이미지, 없으면 CSS 오너먼트 폴백
     return '<div class="card-back">' +
@@ -84,10 +89,10 @@
     return '<div class="card-face">' +
       '<div class="card-ph">' +
       '<div class="card-ph-star">✦</div>' +
-      '<div class="card-ph-name">' + esc(card.name_kr) + "</div>" +
-      '<div class="card-ph-en">' + esc(card.name_en) + "</div>" +
+      '<div class="card-ph-name">' + esc(cardName(card)) + "</div>" +
+      (cardName(card) !== card.name_en ? '<div class="card-ph-en">' + esc(card.name_en) + "</div>" : "") +
       "</div>" +
-      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(card.name_kr) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
+      '<img src="/assets/' + esc(card.image) + "?v=" + ASSET_VER + '" alt="' + esc(cardName(card)) + '" loading="lazy" decoding="async" onerror="this.remove()">' +
       "</div>";
   }
 
@@ -416,7 +421,7 @@
         return '<div><div class="flip' + (isToday ? " big" : "") + '" id="flip' + i + '">' +
           '<div class="flip-inner">' + cardBackHTML() + cardFaceHTML(c.card) + "</div></div>" +
           (c.position ? '<div class="flip-label">' + esc(c.position) + "</div>" : "") +
-          '<div class="flip-name">' + esc(c.card.name_kr) + "</div>" +
+          '<div class="flip-name">' + esc(cardName(c.card)) + "</div>" +
           "</div>";
       }).join("") +
       "</div>";
@@ -464,7 +469,7 @@
       return '<div class="section"><h3>' + esc(title) + "</h3><p>" + esc(body) + "</p>" + kws + "</div>";
     }
     function sectionWithCard(title, body, card) {
-      return '<div class="section"><h3>' + esc(title) + " · " + esc(card.name_kr) + "</h3>" +
+      return '<div class="section"><h3>' + esc(title) + " · " + esc(cardName(card)) + "</h3>" +
         '<div class="sec-card">' + cardFaceHTML(card) + "<p>" + esc(body) + "</p></div></div>";
     }
   }
@@ -512,7 +517,7 @@
       const list = DATA.cards.cards.filter(DEX_TABS[state.dexTab].filter);
       $grid.innerHTML = list.map(function (c) {
         return '<figure class="dex-item" data-id="' + c.id + '">' + cardFaceHTML(c) +
-          "<figcaption>" + esc(c.name_kr) + "</figcaption></figure>";
+          "<figcaption>" + esc(cardName(c)) + "</figcaption></figure>";
       }).join("");
       $grid.querySelectorAll(".dex-item").forEach(function (f) {
         f.addEventListener("click", function () {
@@ -530,8 +535,8 @@
       '<section class="screen dex-detail">' +
       '<div class="dex-head"><button class="back-chevron" id="detailBack" aria-label="뒤로가기"></button></div>' +
       '<div class="dex-detail-card">' + cardFaceHTML(card) + "</div>" +
-      "<h2>" + esc(card.name_kr) + "</h2>" +
-      '<div class="en">' + esc(card.name_en) + "</div>" +
+      "<h2>" + esc(cardName(card)) + "</h2>" +
+      (cardName(card) !== card.name_en ? '<div class="en">' + esc(card.name_en) + "</div>" : "") +
       '<div class="arcana-tag">' + esc(card.arcana) + (card.suit ? " · " + esc(card.suit) : "") + "</div>" +
       section("카드의 의미", card.meaning) +
       section("한 줄 리딩", card.reading_sentence) +

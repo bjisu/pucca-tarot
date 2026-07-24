@@ -35,12 +35,23 @@ def is_crisis(text: str) -> bool:
 
 # ── 프롬프트 재료 ────────────────────────────────────────────
 
+def _display_name(card: dict) -> str:
+    """표시용 카드 이름 — 메이저는 한국어 정식명, 마이너는 name_en 정식 영문.
+
+    name_kr의 '2 Cups' 같은 숫자+슈트 혼합 표기를 화면·해석 문장에 쓰지 않는다.
+    """
+    return card["name_kr"] if card["arcana"] == "Major Arcana" else card["name_en"]
+
+
 def _card_block(cards: List[dict], positions: Optional[List[str]] = None) -> str:
     lines = []
     for i, card in enumerate(cards):
         prefix = f"({positions[i]}) " if positions else ""
+        name = _display_name(card)
+        if name != card["name_en"]:
+            name = f"{name} ({card['name_en']})"
         lines.append(
-            f"- {prefix}{card['name_kr']} ({card['name_en']}) / {card['arcana']}\n"
+            f"- {prefix}{name} / {card['arcana']}\n"
             f"  의미: {card['meaning']}\n"
             f"  한 줄 리딩: {card['reading_sentence']}\n"
             f"  키워드: {', '.join(card['keywords'])}"
@@ -119,7 +130,7 @@ def _fallback_today(card: dict, question: str) -> dict:
     return {
         "one_line": _banmal(card["reading_sentence"]),
         "interpretation": (
-            f"'{question}' — 이 고민에 '{card['name_kr']}' 카드가 나왔어. "
+            f"'{question}' — 이 고민에 '{_display_name(card)}' 카드가 나왔어. "
             f"{_banmal(card['meaning'])} "
             f"이 카드의 키워드는 {', '.join(kw)}인데, 지금 네 상황에 꼭 필요한 힌트야. "
             f"카드가 보여주는 흐름은 정해진 미래가 아니라 가능성이니까, 가볍게 참고하면서 네 마음이 가는 쪽을 살펴봐."
@@ -134,21 +145,21 @@ def _fallback_classic(cards: List[dict], question: str) -> dict:
         {
             "position": CLASSIC_POSITIONS[0],
             "interpretation": (
-                f"지금 네 상황 자리엔 '{c1['name_kr']}' 카드가 나왔어. "
+                f"지금 네 상황 자리엔 '{_display_name(c1)}' 카드가 나왔어. "
                 f"{_banmal(c1['meaning'])} 요즘 네 마음의 배경이 이 카드와 닮아 있을 거야."
             ),
         },
         {
             "position": CLASSIC_POSITIONS[1],
             "interpretation": (
-                f"조언 자리엔 '{c2['name_kr']}'! {_banmal(c2['meaning'])} "
+                f"조언 자리엔 '{_display_name(c2)}'! {_banmal(c2['meaning'])} "
                 f"특히 '{c2['keywords'][0]}'{_josa(c2['keywords'][0], '이라는', '라는')} 키워드를 기억해."
             ),
         },
         {
             "position": CLASSIC_POSITIONS[2],
             "interpretation": (
-                f"결과·전망 자리의 '{c3['name_kr']}' 카드는 이렇게 말해. "
+                f"결과·전망 자리의 '{_display_name(c3)}' 카드는 이렇게 말해. "
                 f"{_banmal(c3['reading_sentence'])} {_banmal(c3['meaning'])}"
             ),
         },
