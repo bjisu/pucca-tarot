@@ -125,7 +125,6 @@ img { max-width: 100%; display: block; }
 .card-ph::after { top: 6.5%; bottom: 6.5%; left: 9%; right: 9%; border-style: dotted; }
 .card-ph-star { color: var(--red); font-size: 1.2em; }
 .card-ph-name { font-weight: 800; font-size: .95em; color: var(--ink); line-height: 1.3; word-break: keep-all; }
-.card-ph-en { font-family: var(--font-serif); font-style: italic; font-size: .62em; color: rgba(179, 52, 42, .75); line-height: 1.2; }
 .card-face > img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: cover; }
 
 /* 카드 뒷면: 일러스트 속 레드 타로백과 동일한 무드 */

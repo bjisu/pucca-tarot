@@ -13,24 +13,6 @@ FRONTEND_DIR = ROOT_DIR / "frontend"
 PROMPTS_DIR = ROOT_DIR / "prompts" / "templates"
 
 
-def _writable_runtime_dir() -> Path:
-    """쓰기 가능한 런타임 디렉터리를 고른다.
-
-    Vercel 등 서버리스 환경은 프로젝트 폴더가 읽기 전용이라 mkdir 이 실패한다.
-    이 경우 조용히 /tmp 로 폴백해 앱이 죽지 않게 한다.
-    """
-    candidate = Path(os.getenv("PUCCA_RUNTIME_DIR", ROOT_DIR / "runtime"))
-    try:
-        candidate.mkdir(parents=True, exist_ok=True)
-        return candidate
-    except OSError:
-        fallback = Path("/tmp/pucca_runtime")
-        fallback.mkdir(parents=True, exist_ok=True)
-        return fallback
-
-
-RUNTIME_DIR = _writable_runtime_dir()
-
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "").strip().lower()
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
