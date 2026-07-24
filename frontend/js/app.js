@@ -49,7 +49,7 @@
     return u;
   }
   function showOverlay(text) {
-    $overlayText.textContent = text || "카드를 읽는 중...";
+    $overlayText.textContent = text || "카드를 읽고 있어...";
     $overlay.classList.remove("hidden");
   }
   function hideOverlay() { $overlay.classList.add("hidden"); }
@@ -369,7 +369,7 @@
 
     /* 서버에 리딩 요청 */
     function submitReading() {
-      showOverlay("뿌까가 카드를 읽는 중...");
+      showOverlay("뿌까가 카드를 읽고 있어...");
       const path = state.mode === "today" ? "/api/reading/today" : "/api/reading/classic";
       post(path, { uuid: getUuid(), question: state.question })
         .then(function (data) {
@@ -552,14 +552,16 @@
 
   /* ═══════════ 부트 ═══════════ */
   function boot() {
-    $app.innerHTML = '<section class="screen"><div class="error-box"><p>별빛을 모으는 중...</p></div></section>';
+    showOverlay("별빛을 모으고 있어...");
     Promise.all([api("/api/cards"), api("/api/categories")])
       .then(function (res) {
+        hideOverlay();
         DATA.cards = res[0];
         DATA.categories = res[1];
         route();
       })
       .catch(function () {
+        hideOverlay();
         $app.innerHTML =
           '<section class="screen"><div class="error-box">' +
           "<p>서버와 연결할 수 없어. 서버가 켜져 있는지 확인해줘!</p>" +

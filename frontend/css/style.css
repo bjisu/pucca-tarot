@@ -441,24 +441,15 @@ img { max-width: 100%; display: block; }
 /* ── 오버레이 ──────────────────────────────── */
 .overlay {
   position: fixed; inset: 0; z-index: 100;
-  background: rgba(247, 239, 227, .9); backdrop-filter: blur(6px);
+  background: var(--bg);   /* 페이지와 같은 크림 단색 */
   display: flex; align-items: center; justify-content: center;
 }
 .overlay.hidden { display: none; }
 .overlay-inner { text-align: center; }
-.orb {
-  width: 76px; height: 76px; margin: 0 auto 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #fffdf8, #f4e0c4 78%);
-  border: 2px solid var(--red);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--red); font-size: 26px;
-  animation: orbspin 2.4s ease-in-out infinite;
-  box-shadow: 0 0 30px rgba(179, 52, 42, .25);
-}
-@keyframes orbspin {
-  0%, 100% { transform: rotate(-8deg) scale(1); }
-  50% { transform: rotate(8deg) scale(1.08); }
+/* 애니메이션 내장 하트 SVG — 화면 폭의 45% (최대 210px) 중앙 배치 */
+.loading-heart {
+  display: block; margin: 0 auto 6px;
+  width: min(45vw, 210px); height: auto;
 }
 #overlay-text { color: var(--ink-soft); font-weight: 700; font-size: 15.5px; }
 
