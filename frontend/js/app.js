@@ -10,7 +10,7 @@
   const $overlayText = document.getElementById("overlay-text");
 
   // 에셋 캐시 무효화 버전 — 같은 파일명으로 이미지를 교체하면 이 값을 올려주세요.
-  const ASSET_VER = "20260724-1";
+  const ASSET_VER = "20260724-2";
 
   /* ── 상태 (새로고침 대비 sessionStorage 유지) ── */
   const STORE_KEY = "pucca_state_v1";
@@ -76,9 +76,9 @@
       "</div>";
   }
   function cardBackHTML() {
-    // 카드 뒷면: assets/image/card.png가 있으면 이미지, 없으면 CSS 오너먼트 폴백
+    // 카드 뒷면: assets/image/card.webp가 있으면 이미지, 없으면 CSS 오너먼트 폴백
     return '<div class="card-back">' +
-      '<img src="/assets/image/card.png?v=' + ASSET_VER + '" alt="" onerror="this.remove()">' +
+      '<img src="/assets/image/card.webp?v=' + ASSET_VER + '" alt="" onerror="this.remove()">' +
       "</div>";
   }
   function cardFaceHTML(card) {
@@ -130,9 +130,9 @@
   function renderHome() {
     $app.innerHTML =
       '<section class="screen home-screen">' +
-      menuCard("Classic Tarot", "클래식 타로", "카드 3장으로 구체적으로 운명을 점쳐줄게", "classic", "content_1.png") +
-      menuCard("Today's Tarot", "오늘의 타로", "오늘의 운세를 카드 1장으로 간편하게 점쳐줄게", "today", "content_2.png") +
-      menuCard("Tarot Card List", "타로카드 리스트", "타로를 알고 보면 더 재밌어!", "dex", "content_3.png") +
+      menuCard("Classic Tarot", "클래식 타로", "카드 3장으로 구체적으로 운명을 점쳐줄게", "classic", "content_1.webp") +
+      menuCard("Today's Tarot", "오늘의 타로", "오늘의 운세를 카드 1장으로 간편하게 점쳐줄게", "today", "content_2.webp") +
+      menuCard("Tarot Card List", "타로카드 리스트", "타로를 알고 보면 더 재밌어!", "dex", "content_3.webp") +
       "</section>";
 
     $app.querySelectorAll("[data-menu]").forEach(function (el) {

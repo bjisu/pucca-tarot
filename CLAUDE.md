@@ -19,9 +19,9 @@
 
 ## 남은 작업 (백로그)
 
-- [ ] 카드 앞면 이미지 78장 (`assets/cards/`, `data/tarot_cards.json`의 image 경로와 일치 — 넣으면 자동 적용)
+- [x] 카드 앞면 이미지 78장 — `assets/cards/*.webp`(600×900) 적용 완료 (2026-07-24)
 - [ ] 뿌까 대화 아바타 이미지 (`assets/character/pucca_main.png` — 넣으면 자동 적용)
-- [ ] 이미지 압축: `card.png`(2.5MB), content_1~3(0.3~0.5MB) — 배포 전 WebP/리사이즈 권장
+- [x] 이미지 압축 — 카드 78장·card·content_1~3 전부 WebP 전환 완료 (2026-07-24). 카드 뒷면 = `assets/image/card.webp`
 - [ ] 결과·대화·도감 화면 톤 미세 통일 검토 (전역 라이트 테마는 적용됨)
 - [ ] `.env`에 LLM API 키 입력 시 AI 해석 활성화 (현재 내장 폴백 해석 동작 중)
 - [ ] 뿌까 라이선스 확정 전까지 GitHub 저장소 Private 유지 권장

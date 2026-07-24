@@ -141,7 +141,7 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: center;
   color: #fdf3e4; font-size: 1.6em; text-shadow: 0 0 10px rgba(255, 230, 200, .5);
 }
-/* 뒷면 이미지(assets/image/card.png)가 있으면 오너먼트를 덮음 — 없으면 onerror로 제거되어 폴백 표시 */
+/* 뒷면 이미지(assets/image/card.webp)가 있으면 오너먼트를 덮음 — 없으면 onerror로 제거되어 폴백 표시 */
 .card-back > img {
   position: absolute; inset: 0; z-index: 1;
   width: 100%; height: 100%; object-fit: cover;
